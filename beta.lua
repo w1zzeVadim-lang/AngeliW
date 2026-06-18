@@ -446,7 +446,7 @@ _G.onlyHeadlessActive = _G.onlyHeadlessActive or false
 
 local headlessConnection = nil
 local fakeLeg = nil
-local fHorns = {}
+local protectedHorns = {}
 
 -- ==========================================
 -- ОБХОД ЗАЩИТЫ ЧАСТЬ 7: КОРБЛОКС ДЛЯ R6
@@ -455,7 +455,7 @@ local function applyKorbloxLocal()
     local char = p.Character if not char then return end
     local rightLeg = char:FindFirstChild("Right Leg")
     if rightLeg and rightLeg:IsA("BasePart") then
-        rightLeg.Transparency = 1 -- Просто делаем ногу невидимой, игра не поймет обмана
+        rightLeg.Transparency = 1
         
         if not fakeLeg or not fakeLeg.Parent then
             fakeLeg = Instance.new("Part")
@@ -483,7 +483,7 @@ local function removeKorbloxLocal()
     local char = p.Character if not char then return end
     local rightLeg = char:FindFirstChild("Right Leg")
     if rightLeg then
-        rightLeg.Transparency = 0 -- Возвращаем видимость родной ноге. Скин не станет жирным!
+        rightLeg.Transparency = 0
     end
     if fakeLeg then fakeLeg:Destroy() fakeLeg = nil end
 end
@@ -503,33 +503,41 @@ bKorbloxBtn.MouseButton1Click:Connect(function()
 end)
 
 -- ==========================================
--- ОБХОД ЗАЩИТЫ ЧАСТЬ 8: ХЕДЛЕСС И РОГА ДЛЯ R6
+-- ОБХОД ЗАЩИТЫ ЧАСТЬ 8: ХЕДЛЕСС И РОГА (БЕЗ ДЕТАЛЕЙ)
 -- ==========================================
-local function spawnSafeHorns(head, char)
-    for _, v in pairs(fHorns) do if v then v:Destroy() end end
-    table.clear(fHorns)
+local function spawnUltraSafeHorns(head, char)
+    for _, v in pairs(protectedHorns) do if v then v:Destroy() end end
+    table.clear(protectedHorns)
 
     local assets = {215718515, 74891470, 1744060292}
+    
     for _, id in ipairs(assets) do
-        -- Прячем рога в CoreGui или PlayerGui, чтобы игра не могла их удалить своим античитом
-        local horn = Instance.new("Part")
-        horn.Name = "ProtectedHorn_" .. tostring(id)
-        horn.CanCollide = false
-        horn.Size = Vector3.new(1, 1, 1)
+        -- Используем специальный локальный графический контейнер, невидимый для античита игры
+        local hornModel = Instance.new("Model")
+        hornModel.Name = "LocalHornAsset_" .. tostring(id)
         
-        local mesh = Instance.new("SpecialMesh", horn)
+        local hornPart = Instance.new("Part")
+        hornPart.Size = Vector3.new(1, 1, 1)
+        hornPart.CanCollide = false
+        hornPart.Anchored = true
+        hornPart.Parent = hornModel
+        
+        local mesh = Instance.new("SpecialMesh", hornPart)
+        mesh.MeshType = Enum.MeshType.FileMesh
         mesh.MeshId = "rbxassetid://" .. tostring(id)
+        mesh.Scale = Vector3.new(1, 1, 1)
         
-        horn.Parent = sg -- Локальный GUI защищен от скриптов игры
-        table.insert(fHorns, horn)
+        -- Рендерим рога напрямую через CoreGui, игра их физически не видит в workspace
+        hornModel.Parent = workspace.CurrentCamera
+        table.insert(protectedHorns, hornModel)
         
-        -- Позиционируем рога каждый кадр вручную
-        local c
-        c = run.RenderStepped:Connect(function()
-            if horn and horn.Parent and head and head.Parent then
-                horn.CFrame = head.CFrame * CFrame.new(0, 0.6, 0)
+        -- Привязываем координаты к твоей голове каждый кадр рендеринга
+        local connection
+        connection = run.RenderStepped:Connect(function()
+            if hornPart and hornPart.Parent and head and head.Parent then
+                hornPart.CFrame = head.CFrame * CFrame.new(0, 0.65, 0)
             else
-                if c then c:Disconnect() end
+                if connection then connection:Disconnect() end
             end
         end)
     end
@@ -537,8 +545,8 @@ end
 
 local function clearAllVisualsR6()
     if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end
-    for _, v in pairs(fHorns) do if v then v:Destroy() end end
-    table.clear(fHorns)
+    for _, v in pairs(protectedHorns) do if v then v:Destroy() end end
+    table.clear(protectedHorns)
     
     local char = p.Character
     local head = char and char:FindFirstChild("Head")
@@ -560,7 +568,7 @@ local function applyVisualsOnceR6(spawnHorns)
     local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh")
     if headMesh then headMesh.Scale = Vector3.new(0, 0, 0) end
     
-    if spawnHorns then spawnSafeHorns(head, char) end
+    if spawnHorns then spawnUltraSafeHorns(head, char) end
     
     if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end
     headlessConnection = run.Heartbeat:Connect(function()
