@@ -431,163 +431,119 @@ shared.isa = isa
 shared.rAct = rAct
 local shared = _G.AngeliW_Shared
 local bKorbloxBtn = shared.bKorbloxBtn
+local bHeadlessBtn = shared.bHeadlessBtn
+local bOnlyHeadlessBtn = shared.bOnlyHeadlessBtn
+local sg = shared.sg
+local fF = shared.fF
+local snowFolder = shared.snowFolder
+local af = shared.af
+local run = game:GetService("RunService")
 local p = game.Players.LocalPlayer
 
 _G.korbloxActive = _G.korbloxActive or false
 _G.headlessActive = _G.headlessActive or false
 _G.onlyHeadlessActive = _G.onlyHeadlessActive or false
 
-local originalLegData = {} 
-local KORBLOX_MESH_ID, KORBLOX_TEXTURE_ID, DARK_GREY_COLOR = "rbxassetid://101851696", "rbxassetid://101851254", Color3.fromRGB(64,64,64)
+local originalLegColor = nil
+local headlessConnection = nil
+local hornParts = {}
 
+-- ==========================================
+-- ИСПРАВЛЕННАЯ ЧАСТЬ 7: КОРБЛОКС ДЛЯ R6
+-- ==========================================
 local function applyKorbloxLocal()
     local char = p.Character if not char then return end 
-    local hum = char:FindFirstChildOfClass("Humanoid") if not hum then return end
-    if hum.RigType == Enum.HumanoidRigType.R15 then
-        local rf, rl, ru = char:FindFirstChild("RightFoot"), char:FindFirstChild("RightLowerLeg"), char:FindFirstChild("RightUpperLeg")
-        if ru and rl and rf then
-            if not originalLegData["R15"] then 
-                originalLegData["R15"] = {
-                    ru_MeshId = ru.MeshId, ru_TextureID = ru.TextureID, ru_Color = ru.Color,
-                    ru_Transparency = ru.Transparency, rl_Transparency = rl.Transparency, rf_Transparency = rf.Transparency
-                } 
-            end
-            rf.Transparency, rl.Transparency = 1, 1
-            ru.MeshId, ru.TextureID, ru.Color, ru.Transparency = "rbxassetid://902942096", "rbxassetid://902843398", Color3.new(1,1,1), 0
+    local rightLeg = char:FindFirstChild("Right Leg")
+    if rightLeg and rightLeg:IsA("BasePart") then
+        if not originalLegColor then
+            originalLegColor = rightLeg.Color
         end
-    else
-        local rightLeg = char:FindFirstChild("Right Leg")
-        if rightLeg and rightLeg:IsA("BasePart") then
-            if not originalLegData["R6_Color"] then
-                originalLegData["R6_Color"] = rightLeg.Color
-                local existingMesh = rightLeg:FindFirstChildOfClass("SpecialMesh")
-                originalLegData["R6_Mesh"] = existingMesh and existingMesh:Clone() or nil
+        -- Очищаем старые меши одежды на ноге, чтобы они не мешали
+        for _, v in ipairs(char:GetChildren()) do
+            if v:IsA("CharacterMesh") and v.BodyPart == Enum.BodyPart.RightLeg then 
+                v:Destroy() 
             end
-            for _,v in ipairs(char:GetChildren()) do
-                if v:IsA("CharacterMesh") and v.BodyPart == Enum.BodyPart.RightLeg then v:Destroy() end
-            end
-            local mesh = rightLeg:FindFirstChildOfClass("SpecialMesh") or Instance.new("SpecialMesh", rightLeg)
-            rightLeg.Color, rightLeg.Transparency = DARK_GREY_COLOR, 0
-            mesh.MeshType = Enum.MeshType.FileMesh mesh.MeshId, mesh.TextureId = KORBLOX_MESH_ID, KORBLOX_TEXTURE_ID mesh.Scale = Vector3.new(1,1,1)
         end
+        -- Создаем меш ноги корблокса
+        local mesh = rightLeg:FindFirstChildOfClass("SpecialMesh") or Instance.new("SpecialMesh", rightLeg)
+        rightLeg.Color = Color3.fromRGB(64, 64, 64)
+        rightLeg.Transparency = 0
+        mesh.MeshType = Enum.MeshType.FileMesh 
+        mesh.MeshId = "rbxassetid://101851696"
+        mesh.TextureId = "rbxassetid://101851254"
+        mesh.Scale = Vector3.new(1, 1, 1)
     end
 end
 
 local function removeKorbloxLocal()
     local char = p.Character if not char then return end 
-    local hum = char:FindFirstChildOfClass("Humanoid") if not hum then return end
-    if hum.RigType == Enum.HumanoidRigType.R15 then
-        local rf, rl, ru = char:FindFirstChild("RightFoot"), char:FindFirstChild("RightLowerLeg"), char:FindFirstChild("RightUpperLeg")
-        local d = originalLegData["R15"]
-        if d and ru and rl and rf then
-            ru.MeshId, ru.TextureID, ru.Color, ru.Transparency = d.ru_MeshId, d.ru_TextureID, d.ru_Color, d.ru_Transparency
-            rl.Transparency, rf.Transparency = d.rl_Transparency, d.rf_Transparency
-            originalLegData["R15"] = nil
+    local rightLeg = char:FindFirstChild("Right Leg")
+    if rightLeg then
+        local mesh = rightLeg:FindFirstChildOfClass("SpecialMesh") 
+        if mesh then mesh:Destroy() end
+        if originalLegColor then 
+            rightLeg.Color = originalLegColor 
         end
-    else
-        local rightLeg = char:FindFirstChild("Right Leg")
-        if rightLeg then
-            local mesh = rightLeg:FindFirstChildOfClass("SpecialMesh") if mesh then mesh:Destroy() end
-            if originalLegData["R6_Mesh"] then originalLegData["R6_Mesh"]:Clone().Parent = rightLeg end
-            if originalLegData["R6_Color"] then rightLeg.Color = originalLegData["R6_Color"] end
-            originalLegData["R6_Color"], originalLegData["R6_Mesh"] = nil, nil
-        end
+        originalLegColor = nil
+        -- Принудительно обновляем персонажа, чтобы убрать жирноту ноги в R6
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if hum then hum:ChangeState(Enum.HumanoidStateType.Landed) end
     end
 end
 
 bKorbloxBtn.MouseButton1Click:Connect(function()
     _G.korbloxActive = not _G.korbloxActive
-    if _G.korbloxActive then bKorbloxBtn.Text, bKorbloxBtn.BackgroundColor3, bKorbloxBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40,240,150), Color3.fromRGB(15,15,18) bKorbloxBtn.UIStroke.Color = Color3.fromRGB(50,255,160) applyKorbloxLocal()
-    else bKorbloxBtn.Text, bKorbloxBtn.BackgroundColor3, bKorbloxBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60,20,25), Color3.fromRGB(200,150,150) bKorbloxBtn.UIStroke.Color = Color3.fromRGB(80,30,35) removeKorbloxLocal() end
+    local stroke = bKorbloxBtn:FindFirstChildOfClass("UIStroke")
+    if _G.korbloxActive then 
+        bKorbloxBtn.Text, bKorbloxBtn.BackgroundColor3, bKorbloxBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) 
+        if stroke then stroke.Color = Color3.fromRGB(50, 255, 160) end 
+        applyKorbloxLocal()
+    else 
+        bKorbloxBtn.Text, bKorbloxBtn.BackgroundColor3, bKorbloxBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) 
+        if stroke then stroke.Color = Color3.fromRGB(80, 30, 35) end 
+        removeKorbloxLocal() 
+    end
 end)
 
-task.spawn(function() while true do if _G.korbloxActive and p.Character then applyKorbloxLocal() end task.wait(0.5) end end)
-
-shared.applyKorbloxLocal = applyKorbloxLocal
-shared.removeKorbloxLocal = removeKorbloxLocal
-local bHeadlessBtn = shared.bHeadlessBtn
-local bOnlyHeadlessBtn = shared.bOnlyHeadlessBtn
-local sg = shared.sg
-local fF = shared.fF
-local snowFolder = shared.snowFolder
-local applyKorbloxLocal = shared.applyKorbloxLocal
-local af = shared.af
-local run = game:GetService("RunService")
-local p = game.Players.LocalPlayer
-
-local activeAccessories = {} 
-local headlessConnection = nil 
-local headIds = {215718515, 74891470, 1744060292}
-
-local function weldParts(part0, part1, c0, c1)
-    for _, child in pairs(part1:GetChildren()) do 
-        if child:IsA("Weld") or child:IsA("WeldConstraint") or child.Name == "AccessoryWeld" then 
-            child:Destroy() 
-        end 
-    end
-    local weld = Instance.new("Weld") 
-    weld.Name, weld.Part0, weld.Part1, weld.C0, weld.C1, weld.Parent = "AccessoryWeld", part0, part1, c0, c1, part0 
-    return weld
-end
-
--- Обновленная безопасная функция обхода блокировки GetObjects
-local function safeGetObjects(assetId)
-    local objects = nil
-    local success = pcall(function()
-        if typeof(getobjects) == "function" then
-            objects = getobjects("rbxassetid://" .. tostring(assetId))
-        else
-            objects = game:GetObjects("rbxassetid://" .. tostring(assetId))
-        end
-    end)
-    if success and objects then 
-        if typeof(objects) == "table" then return objects end
-        if typeof(objects) == "Instance" then return {objects} end
+task.spawn(function() 
+    while true do 
+        if _G.korbloxActive and p.Character then applyKorbloxLocal() end 
+        task.wait(0.5) 
     end 
-    return nil
-end
+end)
 
-local function addAccessoryToCharacter(accessoryId, parentPart, character)
-    if not parentPart or not parentPart.Parent then return end 
-    local accessoryKey = tostring(accessoryId) .. "_" .. parentPart.Name 
-    if activeAccessories[accessoryKey] then return end
+-- ==========================================
+-- ИСПРАВЛЕННАЯ ЧАСТЬ 8: ХЕДЛЕСС И РОГА ДЛЯ R6
+-- ==========================================
+local function spawnR6Horns(head, char)
+    -- Очищаем старые рога, если они были
+    for _, part in pairs(hornParts) do if part then part:Destroy() end end
+    table.clear(hornParts)
+
+    -- Идентификаторы мешей твоих рогов
+    local assets = {215718515, 74891470, 1744060292}
     
-    local objects = safeGetObjects(accessoryId) 
-    if objects and objects[1] then 
-        local accessory = objects[1]
-        accessory.Name, accessory.Parent = accessory.Name .. "_Custom", workspace
-        local handle = accessory:FindFirstChild("Handle") 
-        if not handle or not handle:IsA("BasePart") then 
-            accessory:Destroy() 
-            return 
-        end
+    for _, id in ipairs(assets) do
+        local horn = Instance.new("Part", char)
+        horn.Name = "CustomHorn_" .. tostring(id)
+        horn.CanCollide = false
+        horn.Size = Vector3.new(1, 1, 1)
         
-        local attachment = handle:FindFirstChildOfClass("Attachment")
-        if attachment then
-            local pAttach = nil 
-            for _, d in pairs(parentPart:GetDescendants()) do 
-                if d:IsA("Attachment") and d.Name == attachment.Name then 
-                    pAttach = d 
-                    break 
-                end 
-            end
-            if pAttach then 
-                weldParts(parentPart, handle, pAttach.CFrame, attachment.CFrame) 
-            else 
-                weldParts(parentPart, handle, CFrame.new(), attachment.CFrame) 
-            end
-        else
-            local attPoint = accessory:FindFirstChild("AttachmentPoint") 
-            local c1 = attPoint and attPoint.CFrame or CFrame.new() 
-            local offset = parentPart.Name == "Head" and CFrame.new(0, 0.5, 0) or CFrame.new() 
-            weldParts(parentPart, handle, offset, c1)
-        end
-        handle.CanCollide, accessory.Parent = false, character 
-        activeAccessories[accessoryKey] = accessory
+        local mesh = Instance.new("SpecialMesh", horn)
+        mesh.MeshId = "rbxassetid://" .. tostring(id)
+        mesh.Scale = Vector3.new(1, 1, 1)
+        
+        -- Крепим рога к R6 голове мертвой хваткой через Weld
+        local weld = Instance.new("Weld", horn)
+        weld.Part0 = head
+        weld.Part1 = horn
+        weld.C0 = CFrame.new(0, 0.5, 0) -- Смещение чуть выше центра головы
+        
+        table.insert(hornParts, horn)
     end
 end
 
-local function forceHeadless(head)
+local function forceHeadlessR6(head)
     if not head or not head.Parent then return end 
     head.Transparency = 1
     for _, child in pairs(head:GetChildren()) do 
@@ -596,97 +552,80 @@ local function forceHeadless(head)
         end 
     end
     local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh") 
-    if headMesh then headMesh.Scale = Vector3.new(0.001, 0.001, 0.001) end
+    if headMesh then 
+        headMesh.Scale = Vector3.new(0, 0, 0) -- В R6 уменьшаем в полный ноль
+    end
 end
 
--- Исправленная очистка: убирает баг с жирным персонажем
-local function clearAllVisuals()
+local function clearAllVisualsR6()
     if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end
-    for key, acc in pairs(activeAccessories) do 
-        if acc and acc.Parent then acc:Destroy() end 
-    end 
-    table.clear(activeAccessories)
+    for _, part in pairs(hornParts) do if part then part:Destroy() end end 
+    table.clear(hornParts)
     
     local char = p.Character 
     local head = char and char:FindFirstChild("Head")
-    local hum = char and char:FindFirstChildOfClass("Humanoid")
-    
     if head then
         head.Transparency = 0 
         for _, child in pairs(head:GetChildren()) do 
             if child:IsA("Decal") or child.Name == "face" then child.Transparency = 0 end 
         end
         local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh") 
-        if headMesh then headMesh.Scale = Vector3.new(1, 1, 1) end
-    end
-    
-    -- Фикс жиробаса: заставляем движок Roblox принудительно обновить пропорции скина
-    if hum then
-        pcall(function()
-            local currentRig = hum.RigType
-            hum.RigType = (currentRig == Enum.HumanoidRigType.R15) and Enum.HumanoidRigType.R6 or Enum.HumanoidRigType.R15
-            run.Heartbeat:Wait()
-            hum.RigType = currentRig
-        end)
-    end
-    
-    for _,v in pairs(game:GetService("Lighting"):GetChildren()) do 
-        if v.Name == "AngelLittleAtmosphere" then v:Destroy() end 
+        if headMesh then 
+            headMesh.Scale = Vector3.new(1, 1, 1) -- Возвращаем нормальный размер головы
+        end
     end
 end
 
-local function applyVisualsOnce(spawnHorns)
+local function applyVisualsOnceR6(spawnHorns)
     local char = p.Character if not char then return end 
     local head = char:WaitForChild("Head", 3) if not head then return end 
-    forceHeadless(head)
+    forceHeadlessR6(head)
     
     if spawnHorns then 
-        table.clear(activeAccessories)
-        for _, id in ipairs(headIds) do 
-            task.spawn(function() addAccessoryToCharacter(id, head, char) end) 
-        end 
+        spawnR6Horns(head, char)
     end
     
-    if not headlessConnection then
-        headlessConnection = run.Heartbeat:Connect(function()
-            if (_G.headlessActive or _G.onlyHeadlessActive) and char and char.Parent and head and head.Parent then
-                head.Transparency = 1 
-                for _, child in pairs(head:GetChildren()) do 
-                    if (child:IsA("Decal") or child.Name == "face") and child.Transparency ~= 1 then 
-                        child.Transparency = 1 
-                    end 
-                end
-            else 
-                if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end 
+    if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end
+    headlessConnection = run.Heartbeat:Connect(function()
+        if (_G.headlessActive or _G.onlyHeadlessActive) and char and char.Parent and head and head.Parent then
+            head.Transparency = 1 
+            for _, child in pairs(head:GetChildren()) do 
+                if (child:IsA("Decal") or child.Name == "face") and child.Transparency ~= 1 then 
+                    child.Transparency = 1 
+                end 
             end
-        end)
-    end
+        else 
+            if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end 
+        end
+    end)
 end
 
 bHeadlessBtn.MouseButton1Click:Connect(function()
     if _G.onlyHeadlessActive then return end 
     _G.headlessActive = not _G.headlessActive
+    local stroke = bHeadlessBtn:FindFirstChildOfClass("UIStroke")
     if _G.headlessActive then 
         bHeadlessBtn.Text, bHeadlessBtn.BackgroundColor3, bHeadlessBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) 
-        bHeadlessBtn.UIStroke.Color = Color3.fromRGB(50, 255, 160) 
-        applyVisualsOnce(true)
+        if stroke then stroke.Color = Color3.fromRGB(50, 255, 160) end 
+        applyVisualsOnceR6(true)
     else 
         bHeadlessBtn.Text, bHeadlessBtn.BackgroundColor3, bHeadlessBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) 
-        bHeadlessBtn.UIStroke.Color = Color3.fromRGB(80, 30, 35) 
-        clearAllVisuals() 
+        if stroke then stroke.Color = Color3.fromRGB(80, 30, 35) end 
+        clearAllVisualsR6() 
     end
 end)
 
 bOnlyHeadlessBtn.MouseButton1Click:Connect(function()
     if _G.headlessActive then return end 
     _G.onlyHeadlessActive = not _G.onlyHeadlessActive
+    local stroke = bOnlyHeadlessBtn:FindFirstChildOfClass("UIStroke")
     if _G.onlyHeadlessActive then 
         bOnlyHeadlessBtn.Text, bOnlyHeadlessBtn.BackgroundColor3, bOnlyHeadlessBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) 
-        bOnlyHeadlessBtn.UIStroke.Color = Color3.fromRGB(50, 255, 160) 
-        applyVisualsOnce(false)
+        if stroke then stroke.Color = Color3.fromRGB(50, 255, 160) end 
+        applyVisualsOnceR6(false)
     else 
         bOnlyHeadlessBtn.Text, bOnlyHeadlessBtn.BackgroundColor3, bOnlyHeadlessBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) 
-        bOnlyHeadlessBtn.UIStroke.Color = Color3.fromRGB(80, 30, 35) 
+        if stroke then stroke.Color = Color3.fromRGB(80, 30, 35) end 
         clearAllVisuals() 
     end
 end)
@@ -694,18 +633,19 @@ end)
 p.CharacterAdded:Connect(function() 
     task.wait(0.6) 
     if _G.korbloxActive then applyKorbloxLocal() end 
-    if _G.headlessActive then applyVisualsOnce(true) end 
-    if _G.onlyHeadlessActive then applyVisualsOnce(false) end 
+    if _G.headlessActive then applyVisualsOnceR6(true) end 
+    if _G.onlyHeadlessActive then applyVisualsOnceR6(false) end 
     if shared.ia then af() end 
 end)
 
 sg.Destroying:Connect(function() 
-    clearAllVisuals() 
-    if fF then fF:Destroy() end 
-    if snowFolder then snowFolder:Destroy() end 
+    clearAllVisualsR6() 
+    if fF then pcall(function() fF:Destroy() end) end 
+    if snowFolder then pcall(function() snowFolder:Destroy() end) end 
 end)
 
-shared.applyVisualsOnce = applyVisualsOnce
+shared.applyVisualsOnce = applyVisualsOnceR6
+shared.applyKorbloxLocal = applyKorbloxLocal
 local shared = _G.AngeliW_Shared
 local co4 = shared.co4
 local createTab = shared.createTab
