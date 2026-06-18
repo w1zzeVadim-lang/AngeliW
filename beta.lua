@@ -1,15 +1,15 @@
 -- ==========================================
--- ЧАСТЬ 1 ИЗ 9: ИНИЦИАЛИЗАЦИЯ И ЦЕНТРОВКА ОКНА
+-- ЧАСТЬ 1 ИЗ 9: ИСПРАВЛЕННЫЙ СТАРТ И ЦЕНТРОВКА
 -- ==========================================
 
-if not game:IsLoaded() then game.Loaded:Wait() end
+task.wait(1)
 local p,tw,run,l=game.Players.LocalPlayer,game:GetService("TweenService"),game:GetService("RunService"),game:GetService("Lighting")
 local g=p:WaitForChild("PlayerGui",10)
 
-local function clean(n) 
-    local o=g:FindFirstChild(n) or game.CoreGui:FindFirstChild(n) 
-    if o then o:Destroy() end 
-end 
+local function clean(n) 
+    local o=g:FindFirstChild(n) or game.CoreGui:FindFirstChild(n) 
+    if o then o:Destroy() end 
+end 
 clean("AngelW_TikTokGui") clean("SnowCanvasGui")
 
 local sg=Instance.new("ScreenGui",g) sg.Name,sg.ResetOnSpawn="AngelW_TikTokGui",false
@@ -29,6 +29,7 @@ local tb3=Instance.new("TextButton",sb) tb3.Size,tb3.Position,tb3.BackgroundColo
 Instance.new("UICorner",tb3).CornerRadius=UDim.new(0,6)
 local tb4=Instance.new("TextButton",sb) tb4.Size,tb4.Position,tb4.BackgroundColor3,tb4.Text,tb4.TextColor3,tb4.Font,tb4.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,180),Color3.fromRGB(16,16,18),"📁 Конфиг",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
 Instance.new("UICorner",tb4).CornerRadius=UDim.new(0,6)
+
 -- ==========================================
 -- ЧАСТЬ 2 ИЗ 9: СТРАНИЦЫ И НАВИГАЦИЯ
 -- ==========================================
