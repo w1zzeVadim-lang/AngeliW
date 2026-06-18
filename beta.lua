@@ -1,73 +1,142 @@
--- ==========================================
--- ЧАСТЬ 1 ИЗ 9: ИНИЦИАЛИЗАЦИЯ И ЦЕНТРОВКА ОКНА
--- ==========================================
-
 task.wait(1)
-local p,tw,run,l=game.Players.LocalPlayer,game:GetService("TweenService"),game:GetService("RunService"),game:GetService("Lighting")
-local g=p:WaitForChild("PlayerGui",10)
+_G.AngeliW_Shared = _G.AngeliW_Shared or {}
+
+local p = game.Players.LocalPlayer
+local tw = game:GetService("TweenService")
+local run = game:GetService("RunService")
+local l = game:GetService("Lighting")
+local g = p:WaitForChild("PlayerGui", 10)
 
 local function clean(n) 
-    local o=g:FindFirstChild(n) or game.CoreGui:FindFirstChild(n) 
+    local o = g:FindFirstChild(n) or game.CoreGui:FindFirstChild(n) 
     if o then o:Destroy() end 
 end 
-clean("AngelW_TikTokGui") clean("SnowCanvasGui")
+clean("AngelW_TikTokGui") 
+clean("SnowCanvasGui")
 
-local sg=Instance.new("ScreenGui",g) sg.Name,sg.ResetOnSpawn="AngelW_TikTokGui",false
-local mf=Instance.new("Frame",sg) mf.Size,mf.Position,mf.AnchorPoint,mf.BackgroundColor3,mf.BorderSizePixel,mf.ClipsDescendants=UDim2.new(0,430,0,260),UDim2.new(0.5,0,0.5,0),Vector2.new(0.5,0.5),Color3.fromRGB(15,15,18),0,true
-Instance.new("UICorner",mf).CornerRadius=UDim.new(0,10)
-local ms=Instance.new("UIStroke",mf) ms.Thickness,ms.Color=1,Color3.fromRGB(45,45,50)
+local sg = Instance.new("ScreenGui", g) 
+sg.Name = "AngelW_TikTokGui"
+sg.ResetOnSpawn = false
 
-local sb=Instance.new("Frame",mf) sb.Size,sb.BackgroundColor3,sb.BorderSizePixel=UDim2.new(0,130,1,0),Color3.fromRGB(11,11,13),0
-local sst=Instance.new("UIStroke",sb) sst.Thickness,sst.Color=1,Color3.fromRGB(30,30,35)
-local lo=Instance.new("TextLabel",sb) lo.Size,lo.Position,lo.Text,lo.TextColor3,lo.Font,lo.TextSize,lo.TextXAlignment,lo.BackgroundTransparency=UDim2.new(1,-15,0,45),UDim2.new(0,15,0,0),"AngeliW",Color3.fromRGB(240,240,245),Enum.Font.GothamBold,16,0,1
+local mf = Instance.new("Frame", sg) 
+mf.Size = UDim2.new(0, 430, 0, 260)
+mf.Position = UDim2.new(0.5, 0, 0.5, 0)
+mf.AnchorPoint = Vector2.new(0.5, 0.5)
+mf.BackgroundColor3 = Color3.fromRGB(15, 15, 18)
+mf.BorderSizePixel = 0
+mf.ClipsDescendants = true
 
-local tb1=Instance.new("TextButton",sb) tb1.Size,tb1.Position,tb1.BackgroundColor3,tb1.Text,tb1.TextColor3,tb1.Font,tb1.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,60),Color3.fromRGB(24,24,27),"✨ Функции",Color3.fromRGB(245,245,245),Enum.Font.GothamMedium,11
-Instance.new("UICorner",tb1).CornerRadius=UDim.new(0,6)
-local tb2=Instance.new("TextButton",sb) tb2.Size,tb2.Position,tb2.BackgroundColor3,tb2.Text,tb2.TextColor3,tb2.Font,tb2.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,100),Color3.fromRGB(16,16,18),"⚙️ Настройки",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
-Instance.new("UICorner",tb2).CornerRadius=UDim.new(0,6)
-local tb3=Instance.new("TextButton",sb) tb3.Size,tb3.Position,tb3.BackgroundColor3,tb3.Text,tb3.TextColor3,tb3.Font,tb3.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,140),Color3.fromRGB(16,16,18),"👑 Важные",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
-Instance.new("UICorner",tb3).CornerRadius=UDim.new(0,6)
-local tb4=Instance.new("TextButton",sb) tb4.Size,tb4.Position,tb4.BackgroundColor3,tb4.Text,tb4.TextColor3,tb4.Font,tb4.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,180),Color3.fromRGB(16,16,18),"📁 Конфиг",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
-Instance.new("UICorner",tb4).CornerRadius=UDim.new(0,6)-- ==========================================
--- ЧАСТЬ 2 ИЗ 9: СТРАНИЦЫ И НАВИГАЦИЯ
--- ==========================================
+Instance.new("UICorner", mf).CornerRadius = UDim.new(0, 10)
+local ms = Instance.new("UIStroke", mf) 
+ms.Thickness, ms.Color = 1, Color3.fromRGB(45, 45, 50)
 
-local co1=Instance.new("ScrollingFrame",mf) co1.Size,co1.Position,co1.BackgroundTransparency,co1.Visible,co1.CanvasSize,co1.ScrollBarThickness=UDim2.new(1,-145,1,-20),UDim2.new(0,145,0,15),1,true,UDim2.new(0,0,0,300),0
-local co2=Instance.new("ScrollingFrame",mf) co2.Size,co2.Position,co2.BackgroundTransparency,co2.Visible,co2.CanvasSize,co2.ScrollBarThickness=UDim2.new(1,-145,1,-20),UDim2.new(0,145,0,15),1,false,UDim2.new(0,0,0,300),0
-local co4=Instance.new("ScrollingFrame",mf) co4.Size,co4.Position,co4.BackgroundTransparency,co4.Visible,co4.CanvasSize,co4.ScrollBarThickness=UDim2.new(1,-145,1,-20),UDim2.new(0,145,0,15),1,false,UDim2.new(0,0,0,300),0
+local sb = Instance.new("Frame", mf) 
+sb.Size, sb.BackgroundColor3, sb.BorderSizePixel = UDim2.new(0, 130, 1, 0), Color3.fromRGB(11, 11, 13), 0
+local sst = Instance.new("UIStroke", sb) 
+sst.Thickness, sst.Color = 1, Color3.fromRGB(30, 30, 35)
 
-local co3_1=Instance.new("ScrollingFrame",mf) co3_1.Size,co3_1.Position,co3_1.BackgroundTransparency,co3_1.Visible,co3_1.CanvasSize,co3_1.ScrollBarThickness=UDim2.new(1,-145,1,-55),UDim2.new(0,145,0,50),1,false,UDim2.new(0,0,0,300),0
-local co3_2=Instance.new("ScrollingFrame",mf) co3_2.Size,co3_2.Position,co3_2.BackgroundTransparency,co3_2.Visible,co3_2.CanvasSize,co3_2.ScrollBarThickness=UDim2.new(1,-145,1,-55),UDim2.new(0,145,0,50),1,false,UDim2.new(0,0,0,300),0
-local subNav=Instance.new("Frame",mf) subNav.Size,subNav.Position,subNav.BackgroundTransparency,subNav.Visible=UDim2.new(1,-145,0,30),UDim2.new(0,145,0,15),1,false
+local lo = Instance.new("TextLabel", sb) 
+lo.Size, lo.Position, lo.Text, lo.TextColor3, lo.Font, lo.TextSize, lo.TextXAlignment, lo.BackgroundTransparency = UDim2.new(1, -15, 0, 45), UDim2.new(0, 15, 0, 0), "AngeliW", Color3.fromRGB(240, 240, 245), Enum.Font.GothamBold, 16, 0, 1
 
-local subBtn1=Instance.new("TextButton",subNav) subBtn1.Size,subBtn1.Position,subBtn1.BackgroundColor3,subBtn1.Text,subBtn1.TextColor3,subBtn1.Font,subBtn1.TextSize=UDim2.new(0,125,1,0),UDim2.new(0,0,0,0),Color3.fromRGB(24,24,27),"Корблокс",Color3.fromRGB(245,245,245),Enum.Font.GothamBold,11
-Instance.new("UICorner",subBtn1).CornerRadius=UDim.new(0,6)
-local subBtn2=Instance.new("TextButton",subNav) subBtn2.Size,subBtn2.Position,subBtn2.BackgroundColor3,subBtn2.Text,subBtn2.TextColor3,subBtn2.Font,subBtn2.TextSize=UDim2.new(0,125,1,0),UDim2.new(0,135,0,0),Color3.fromRGB(16,16,18),"Хедлесс + Рога",Color3.fromRGB(150,150,155),Enum.Font.GothamBold,11
-Instance.new("UICorner",subBtn2).CornerRadius=UDim.new(0,6)
+local tb1 = Instance.new("TextButton", sb) 
+tb1.Size, tb1.Position, tb1.BackgroundColor3, tb1.Text, tb1.TextColor3, tb1.Font, tb1.TextSize = UDim2.new(1, -16, 0, 32), UDim2.new(0, 8, 0, 60), Color3.fromRGB(24, 24, 27), "✨ Функции", Color3.fromRGB(245, 245, 245), Enum.Font.GothamMedium, 11
+Instance.new("UICorner", tb1).CornerRadius = UDim.new(0, 6)
 
-local ll1=Instance.new("UIListLayout",co1) ll1.Padding,ll1.SortOrder=UDim.new(0,10),0
-local ll2=Instance.new("UIListLayout",co2) ll2.Padding,ll2.SortOrder=UDim.new(0,10),0
-local ll3_1=Instance.new("UIListLayout",co3_1) ll3_1.Padding,ll3_1.SortOrder=UDim.new(0,10),0
-local ll3_2=Instance.new("UIListLayout",co3_2) ll3_2.Padding,ll3_2.SortOrder=UDim.new(0,10),0
-local ll4=Instance.new("UIListLayout",co4) ll4.Padding,ll4.SortOrder=UDim.new(0,10),0
+local tb2 = Instance.new("TextButton", sb) 
+tb2.Size, tb2.Position, tb2.BackgroundColor3, tb2.Text, tb2.TextColor3, tb2.Font, tb2.TextSize = UDim2.new(1, -16, 0, 32), UDim2.new(0, 8, 0, 100), Color3.fromRGB(16, 16, 18), "⚙️ Настройки", Color3.fromRGB(150, 150, 155), Enum.Font.GothamMedium, 11
+Instance.new("UICorner", tb2).CornerRadius = UDim.new(0, 6)
+
+local tb3 = Instance.new("TextButton", sb) 
+tb3.Size, tb3.Position, tb3.BackgroundColor3, tb3.Text, tb3.TextColor3, tb3.Font, tb3.TextSize = UDim2.new(1, -16, 0, 32), UDim2.new(0, 8, 0, 140), Color3.fromRGB(16, 16, 18), "👑 Важные", Color3.fromRGB(150, 150, 155), Enum.Font.GothamMedium, 11
+Instance.new("UICorner", tb3).CornerRadius = UDim.new(0, 6)
+
+local tb4 = Instance.new("TextButton", sb) 
+tb4.Size, tb4.Position, tb4.BackgroundColor3, tb4.Text, tb4.TextColor3, tb4.Font, tb4.TextSize = UDim2.new(1, -16, 0, 32), UDim2.new(0, 8, 0, 180), Color3.fromRGB(16, 16, 18), "📁 Конфиг", Color3.fromRGB(150, 150, 155), Enum.Font.GothamMedium, 11
+Instance.new("UICorner", tb4).CornerRadius = UDim.new(0, 6)
+
+_G.AngeliW_Shared.mf = mf
+_G.AngeliW_Shared.tb1 = tb1
+_G.AngeliW_Shared.tb2 = tb2
+_G.AngeliW_Shared.tb3 = tb3
+_G.AngeliW_Shared.tb4 = tb4
+_G.AngeliW_Shared.sg = sg
+_G.AngeliW_Shared.tw = tw
+local shared = _G.AngeliW_Shared
+local mf = shared.mf
+local tb1 = shared.tb1
+local tb2 = shared.tb2
+local tb3 = shared.tb3
+local tb4 = shared.tb4
+
+local co1 = Instance.new("ScrollingFrame", mf) 
+co1.Size, co1.Position, co1.BackgroundTransparency, co1.Visible, co1.CanvasSize, co1.ScrollBarThickness = UDim2.new(1, -145, 1, -20), UDim2.new(0, 145, 0, 15), 1, true, UDim2.new(0, 0, 0, 300), 0
+
+local co2 = Instance.new("ScrollingFrame", mf) 
+co2.Size, co2.Position, co2.BackgroundTransparency, co2.Visible, co2.CanvasSize, co2.ScrollBarThickness = UDim2.new(1, -145, 1, -20), UDim2.new(0, 145, 0, 15), 1, false, UDim2.new(0, 0, 0, 300), 0
+
+local co4 = Instance.new("ScrollingFrame", mf) 
+co4.Size, co4.Position, co4.BackgroundTransparency, co4.Visible, co4.CanvasSize, co4.ScrollBarThickness = UDim2.new(1, -145, 1, -20), UDim2.new(0, 145, 0, 15), 1, false, UDim2.new(0, 0, 0, 300), 0
+
+local co3_1 = Instance.new("ScrollingFrame", mf) 
+co3_1.Size, co3_1.Position, co3_1.BackgroundTransparency, co3_1.Visible, co3_1.CanvasSize, co3_1.ScrollBarThickness = UDim2.new(1, -145, 1, -55), UDim2.new(0, 145, 0, 50), 1, false, UDim2.new(0, 0, 0, 300), 0
+
+local co3_2 = Instance.new("ScrollingFrame", mf) 
+co3_2.Size, co3_2.Position, co3_2.BackgroundTransparency, co3_2.Visible, co3_2.CanvasSize, co3_2.ScrollBarThickness = UDim2.new(1, -145, 1, -55), UDim2.new(0, 145, 0, 50), 1, false, UDim2.new(0, 0, 0, 300), 0
+
+local subNav = Instance.new("Frame", mf) 
+subNav.Size, subNav.Position, subNav.BackgroundTransparency, subNav.Visible = UDim2.new(1, -145, 0, 30), UDim2.new(0, 145, 0, 15), 1, false
+
+local subBtn1 = Instance.new("TextButton", subNav) 
+subBtn1.Size, subBtn1.Position, subBtn1.BackgroundColor3, subBtn1.Text, subBtn1.TextColor3, subBtn1.Font, subBtn1.TextSize = UDim2.new(0, 125, 1, 0), UDim2.new(0, 0, 0, 0), Color3.fromRGB(24, 24, 27), "Корблокс", Color3.fromRGB(245, 245, 245), Enum.Font.GothamBold, 11
+Instance.new("UICorner", subBtn1).CornerRadius = UDim.new(0, 6)
+
+local subBtn2 = Instance.new("TextButton", subNav) 
+subBtn2.Size, subBtn2.Position, subBtn2.BackgroundColor3, subBtn2.Text, subBtn2.TextColor3, subBtn2.Font, subBtn2.TextSize = UDim2.new(0, 125, 1, 0), UDim2.new(0, 135, 0, 0), Color3.fromRGB(16, 16, 18), "Хедлесс + Рога", Color3.fromRGB(150, 150, 155), Enum.Font.GothamBold, 11
+Instance.new("UICorner", subBtn2).CornerRadius = UDim.new(0, 6)
+
+local ll1 = Instance.new("UIListLayout", co1) ll1.Padding, ll1.SortOrder = UDim.new(0, 10), 0
+local ll2 = Instance.new("UIListLayout", co2) ll2.Padding, ll2.SortOrder = UDim.new(0, 10), 0
+local ll3_1 = Instance.new("UIListLayout", co3_1) ll3_1.Padding, ll3_1.SortOrder = UDim.new(0, 10), 0
+local ll3_2 = Instance.new("UIListLayout", co3_2) ll3_2.Padding, ll3_2.SortOrder = UDim.new(0, 10), 0
+local ll4 = Instance.new("UIListLayout", co4) ll4.Padding, ll4.SortOrder = UDim.new(0, 10), 0
 
 local function resetMainButtons()
-    tb1.BackgroundColor3,tb1.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
-    tb2.BackgroundColor3,tb2.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
-    tb3.BackgroundColor3,tb3.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
-    tb4.BackgroundColor3,tb4.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
-    co1.Visible,co2.Visible,co3_1.Visible,co3_2.Visible,co4.Visible,subNav.Visible=false,false,false,false,false,false
+    tb1.BackgroundColor3, tb1.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155)
+    tb2.BackgroundColor3, tb2.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155)
+    tb3.BackgroundColor3, tb3.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155)
+    tb4.BackgroundColor3, tb4.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155)
+    co1.Visible, co2.Visible, co3_1.Visible, co3_2.Visible, co4.Visible, subNav.Visible = false, false, false, false, false, false
 end
 
-tb1.MouseButton1Click:Connect(function() resetMainButtons() co1.Visible=true tb1.BackgroundColor3,tb1.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)
-tb2.MouseButton1Click:Connect(function() resetMainButtons() co2.Visible=true tb2.BackgroundColor3,tb2.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)
-tb4.MouseButton1Click:Connect(function() resetMainButtons() co4.Visible=true tb4.BackgroundColor3,tb4.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)
-tb3.MouseButton1Click:Connect(function() resetMainButtons() subNav.Visible,co3_1.Visible=true,true tb3.BackgroundColor3,tb3.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) end)
+tb1.MouseButton1Click:Connect(function() resetMainButtons() co1.Visible = true tb1.BackgroundColor3, tb1.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) end)
+tb2.MouseButton1Click:Connect(function() resetMainButtons() co2.Visible = true tb2.BackgroundColor3, tb2.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) end)
+tb4.MouseButton1Click:Connect(function() resetMainButtons() co4.Visible = true tb4.BackgroundColor3, tb4.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) end)
 
-subBtn1.MouseButton1Click:Connect(function() co3_1.Visible,co3_2.Visible=true,false subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) end)
-subBtn2.MouseButton1Click:Connect(function() co3_1.Visible,co3_2.Visible=false,true subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)-- ==========================================
--- ЧАСТЬ 3 ИЗ 9: СОЗДАНИЕ ПАНЕЛЕЙ И КНОПОК
--- ==========================================
+tb3.MouseButton1Click:Connect(function() 
+    resetMainButtons() 
+    subNav.Visible, co3_1.Visible = true, true 
+    tb3.BackgroundColor3, tb3.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) 
+    subBtn1.BackgroundColor3, subBtn1.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) 
+    subBtn2.BackgroundColor3, subBtn2.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155) 
+end)
+
+subBtn1.MouseButton1Click:Connect(function() co3_1.Visible, co3_2.Visible = true, false subBtn1.BackgroundColor3, subBtn1.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) subBtn2.BackgroundColor3, subBtn2.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155) end)
+subBtn2.MouseButton1Click:Connect(function() co3_1.Visible, co3_2.Visible = false, true subBtn1.BackgroundColor3, subBtn1.TextColor3 = Color3.fromRGB(16, 16, 18), Color3.fromRGB(150, 150, 155) subBtn2.BackgroundColor3, subBtn2.TextColor3 = Color3.fromRGB(24, 24, 27), Color3.fromRGB(245, 245, 245) end)
+
+shared.co1 = co1
+shared.co2 = co2
+shared.co3_1 = co3_1
+shared.co3_2 = co3_2
+shared.co4 = co4
+shared.bOff_placeholder = nil -- Передадим позже
+local shared = _G.AngeliW_Shared
+local mf = shared.mf
+local co1 = shared.co1
+local co2 = shared.co2
+local co3_1 = shared.co3_1
+local co3_2 = shared.co3_2
+local sg = shared.sg
+local tw = shared.tw
 
 local function createTab(parent,title,descText) 
     local fr=Instance.new("Frame",parent) fr.Size,fr.BackgroundColor3=UDim2.new(0,260,0,65),Color3.fromRGB(20,20,23) 
@@ -90,6 +159,8 @@ Instance.new("UICorner",bAuraBtn).CornerRadius=UDim.new(0,6) Instance.new("UIStr
 local bJump=createTab(co1,"ТЕНЕВОЙ ПРЫЖОК","Тёмные кольца") 
 local bJumpBtn=Instance.new("TextButton",bJump) bJumpBtn.Size,bJumpBtn.Position,bJumpBtn.BackgroundColor3,bJumpBtn.Text,bJumpBtn.TextColor3,bJumpBtn.Font,bJumpBtn.TextSize=UDim2.new(0,45,0,22),UDim2.new(1,-55,0,30),Color3.fromRGB(60,20,25),"ВЫКЛ",Color3.fromRGB(200,150,150),Enum.Font.GothamMedium,10 
 Instance.new("UICorner",bJumpBtn).CornerRadius=UDim.new(0,6) Instance.new("UIStroke",bJumpBtn).Color=Color3.fromRGB(80,30,35) 
+
+local uis=game:GetService("UserInputService")
 
 local function createSlider(parent,title,minV,maxV,defV) 
     local f=createTab(parent,title,"") local sBg=Instance.new("Frame",f) sBg.Size,sBg.Position,sBg.BackgroundColor3=UDim2.new(0,130,0,6),UDim2.new(0,22,0,38),Color3.fromRGB(40,40,45) Instance.new("UICorner",sBg) 
@@ -116,7 +187,7 @@ local bCNcFrame=createTab(co2,"СКВОЗЬ СТЕНЫ (NOCLIP)","Проход �
 local bNcToggle=Instance.new("TextButton",bCNcFrame) bNcToggle.Size,bNcToggle.Position,bNcToggle.BackgroundColor3,bNcToggle.Text,bNcToggle.TextColor3,bNcToggle.Font,bNcToggle.TextSize=UDim2.new(0,45,0,22),UDim2.new(1,-55,0,30),Color3.fromRGB(60,20,25),"ВЫКЛ",Color3.fromRGB(200,150,150),Enum.Font.GothamMedium,10 
 Instance.new("UICorner",bNcToggle).CornerRadius=UDim.new(0,6) Instance.new("UIStroke",bNcToggle).Color=Color3.fromRGB(80,30,35) 
 
-local bKorbloxFrame=createTab(co3_1,"KORBLOX LEG","Визуальная нога") 
+local bKorbloxFrame=createTab(co3_1,"KORBLOX LEG","Visual leg") 
 local bKorbloxBtn=Instance.new("TextButton",bKorbloxFrame) bKorbloxBtn.Size,bKorbloxBtn.Position,bKorbloxBtn.BackgroundColor3,bKorbloxBtn.Text,bKorbloxBtn.TextColor3,bKorbloxBtn.Font,bKorbloxBtn.TextSize=UDim2.new(0,45,0,22),UDim2.new(1,-55,0,30),Color3.fromRGB(60,20,25),"ВЫКЛ",Color3.fromRGB(200,150,150),Enum.Font.GothamMedium,10 
 Instance.new("UICorner",bKorbloxBtn).CornerRadius=UDim.new(0,6) Instance.new("UIStroke",bKorbloxBtn).Color=Color3.fromRGB(80,30,35) 
 
@@ -132,7 +203,6 @@ local open=Instance.new("TextButton",sg) open.Size,open.Position,open.Background
 Instance.new("UICorner",open).CornerRadius=UDim.new(0,8) local ops=Instance.new("UIStroke",open) ops.Thickness,ops.Color=1,Color3.fromRGB(50,50,55) 
 
 local mo=true open.MouseButton1Click:Connect(function() mo=not mo mf.Visible=mo if mo then tw:Create(mf,TweenInfo.new(0.3),{Size=UDim2.new(0,430,0,260)}):Play() end end) 
-local uis=game:GetService("UserInputService") 
 
 local function drag(f) 
     local dragging, dragInput, dragStart, startPos
@@ -154,9 +224,38 @@ local function drag(f)
         end 
     end) 
 end 
-drag(mf) drag(open)-- ==========================================
--- ЧАСТЬ 4 ИЗ 9: СЛАЙДЕРЫ И КАМЕРА
--- ==========================================
+drag(mf) drag(open)
+
+shared.createTab = createTab
+shared.bSnow = bSnow
+shared.bAuraBtn = bAuraBtn
+shared.bJumpBtn = bJumpBtn
+shared.sBgF = sBgF
+shared.sFilF = sFilF
+shared.sBtnF = sBtnF
+shared.numF = numF
+shared.sBgS = sBgS
+shared.sFilS = sFilS
+shared.sBtnS = sBtnS
+shared.numS = numS
+shared.bOff = bOff
+shared.bFlyToggle = bFlyToggle
+shared.bNcToggle = bNcToggle
+shared.bKorbloxBtn = bKorbloxBtn
+shared.bHeadlessBtn = bHeadlessBtn
+shared.bOnlyHeadlessBtn = bOnlyHeadlessBtn
+shared.uis = uis
+local shared = _G.AngeliW_Shared
+local uis = shared.uis
+local sBgF = shared.sBgF
+local sFilF = shared.sFilF
+local sBtnF = shared.sBtnF
+local numF = shared.numF
+local sBgS = shared.sBgS
+local sFilS = shared.sFilS
+local sBtnS = shared.sBtnS
+local numS = shared.numS
+local bOff = shared.bOff
 
 local function setupSlider(sBg,sFil,sBtn,num,minV,maxV,defV,callback) 
     local dragS=false 
@@ -181,9 +280,15 @@ bOff.MouseButton1Click:Connect(function()
         bOff.Text,bOff.BackgroundColor3,bOff.TextColor3="ON",Color3.fromRGB(40,240,150),Color3.fromRGB(15,15,18) bOff.UIStroke.Color=Color3.fromRGB(50,255,160) 
         workspace.CurrentCamera.FieldOfView=tonumber(numF.Text) or 70 
     end 
-end)-- ==========================================
--- ЧАСТЬ 5 ИЗ 9: СИСТЕМА ПОЛЕТА И NOCLIP
--- ==========================================
+end)
+
+shared.flySpeed = flySpeed
+local shared = _G.AngeliW_Shared
+local sg = shared.sg
+local run = game:GetService("RunService")
+local p = game.Players.LocalPlayer
+local bFlyToggle = shared.bFlyToggle
+local bNcToggle = shared.bNcToggle
 
 local flying,noclip=false,false local bv,bgG=nil,nil 
 local flyBtn=Instance.new("TextButton",sg) flyBtn.Size,flyBtn.Position,flyBtn.BackgroundColor3,flyBtn.TextColor3,flyBtn.Font,flyBtn.TextSize,flyBtn.Text,flyBtn.Visible=UDim2.new(0,90,0,45),UDim2.new(0.75,0,0.5,0),Color3.fromRGB(60,20,25),Color3.fromRGB(200,150,150),Enum.Font.GothamBold,14,"ЛЕЖАТЬ",false 
@@ -219,14 +324,25 @@ run.Heartbeat:Connect(function()
     if noclip and p.Character then for _,v in pairs(p.Character:GetChildren()) do if v:IsA("BasePart") then v.CanCollide=false end end end 
     if flying and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") and bv and bgG then 
         local r,h,cam=p.Character.HumanoidRootPart, p.Character.Humanoid, workspace.CurrentCamera r.AssemblyLinearVelocity, r.AssemblyAngularVelocity=Vector3.new(0,0,0), Vector3.new(0,0,0) 
-        bgG.CFrame=cam.CFrame h.PlatformStand=true bv.Velocity=cam.CFrame.LookVector*(flySpeed*25) 
+        bgG.CFrame=cam.CFrame h.PlatformStand=true bv.Velocity=cam.CFrame.LookVector*(shared.flySpeed*25) 
     else 
         if bv then bv:Destroy() bv=nil end if bgG then bgG:Destroy() bgG=nil end 
         local h=p.Character and p.Character:FindFirstChild("Humanoid") if h and h.PlatformStand then h.PlatformStand=false end 
     end 
-end)-- ==========================================
--- ЧАСТЬ 6 ИЗ 9: ВИЗУАЛЬНЫЕ ЭФФЕКТЫ
--- ==========================================
+end)
+
+shared.flying = flying
+shared.noclip = noclip
+shared.flyBtn = flyBtn
+shared.bv = bv
+shared.bgG = bgG
+local shared = _G.AngeliW_Shared
+local bSnow = shared.bSnow
+local bAuraBtn = shared.bAuraBtn
+local bJumpBtn = shared.bJumpBtn
+local tw = shared.tw
+local run = game:GetService("RunService")
+local p = game.Players.LocalPlayer
 
 local isa,snowFolder=false,workspace:FindFirstChild("SnowFX") or Instance.new("Folder",workspace) snowFolder.Name="SnowFX" 
 bSnow.MouseButton1Click:Connect(function() isa=not isa if isa then bSnow.Text,bSnow.BackgroundColor3,bSnow.TextColor3="ВКЛ",Color3.fromRGB(40,240,150),Color3.fromRGB(15,15,18) bSnow.UIStroke.Color=Color3.fromRGB(50,255,160) else bSnow.Text,bSnow.BackgroundColor3,bSnow.TextColor3="ВЫКЛ",Color3.fromRGB(60,20,25),Color3.fromRGB(200,150,150) bSnow.UIStroke.Color=Color3.fromRGB(80,30,35) snowFolder:ClearAllChildren() end end) 
@@ -243,7 +359,7 @@ run.RenderStepped:Connect(function()
     end 
 end) 
 
-local ia=false 
+local ia = false 
 local function af() 
     local c=p.Character local t=c and (c:FindFirstChild("Torso") or c:FindFirstChild("UpperTorso")) 
     for _,v in pairs(game:GetService("Lighting"):GetChildren()) do if v.Name == "AngelLittleAtmosphere" then v:Destroy() end end
@@ -271,9 +387,17 @@ local function makeRing(sz,tSz,sp)
     tw:Create(d,TweenInfo.new(sp),{Size=tSz,Transparency=1}):Play() game:GetService("Debris"):AddItem(d,sp) 
 end 
 bJumpBtn.MouseButton1Click:Connect(function() rAct=not rAct if rAct then bJumpBtn.Text,bJumpBtn.BackgroundColor3,bJumpBtn.UIStroke.Color="ВКЛ",Color3.fromRGB(40,240,150),Color3.fromRGB(50,255,160) bJumpBtn.TextColor3=Color3.fromRGB(15,15,18) else bJumpBtn.Text,bJumpBtn.BackgroundColor3,bJumpBtn.UIStroke.Color="ВЫКЛ",Color3.fromRGB(60,20,25),Color3.fromRGB(80,30,35) bJumpBtn.TextColor3=Color3.fromRGB(200,150,155) end end) 
-run.Heartbeat:Connect(function() local h=p.Character and p.Character:FindFirstChild("Humanoid") if h and rAct then local air=h.FloorMaterial==Enum.Material.Air if air and not wasAir then makeRing(Vector3.new(0.1,1.5,1.5),Vector3.new(0.01,7,7),0.25) makeRing(Vector3.new(0.05,1,1),Vector3.new(0.01,11,11),0.3) end wasAir=air end end)-- ==========================================
--- ЧАСТЬ 7 ИЗ 9: ЛОКАЛЬНЫЙ КОРБЛОКС
--- ==========================================
+run.Heartbeat:Connect(function() local h=p.Character and p.Character:FindFirstChild("Humanoid") if h and rAct then local air=h.FloorMaterial==Enum.Material.Air if air and not wasAir then makeRing(Vector3.new(0.1,1.5,1.5),Vector3.new(0.01,7,7),0.25) makeRing(Vector3.new(0.05,1,1),Vector3.new(0.01,11,11),0.3) end wasAir=air end end)
+
+shared.snowFolder = snowFolder
+shared.fF = fF
+shared.ia = ia
+shared.af = af
+shared.isa = isa
+shared.rAct = rAct
+local shared = _G.AngeliW_Shared
+local bKorbloxBtn = shared.bKorbloxBtn
+local p = game.Players.LocalPlayer
 
 _G.korbloxActive = _G.korbloxActive or false
 _G.headlessActive = _G.headlessActive or false
@@ -343,9 +467,20 @@ bKorbloxBtn.MouseButton1Click:Connect(function()
     else bKorbloxBtn.Text, bKorbloxBtn.BackgroundColor3, bKorbloxBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60,20,25), Color3.fromRGB(200,150,150) bKorbloxBtn.UIStroke.Color = Color3.fromRGB(80,30,35) removeKorbloxLocal() end
 end)
 
-task.spawn(function() while true do if _G.korbloxActive and p.Character then applyKorbloxLocal() end task.wait(0.5) end end)-- ==========================================
--- ЧАСТЬ 8 ИЗ 9: ХЕДЛЕСС И ОБРАБОТЧИК СПАВНА
--- ==========================================
+task.spawn(function() while true do if _G.korbloxActive and p.Character then applyKorbloxLocal() end task.wait(0.5) end end)
+
+shared.applyKorbloxLocal = applyKorbloxLocal
+shared.removeKorbloxLocal = removeKorbloxLocal
+local shared = _G.AngeliW_Shared
+local bHeadlessBtn = shared.bHeadlessBtn
+local bOnlyHeadlessBtn = shared.bOnlyHeadlessBtn
+local sg = shared.sg
+local fF = shared.fF
+local snowFolder = shared.snowFolder
+local applyKorbloxLocal = shared.applyKorbloxLocal
+local af = shared.af
+local run = game:GetService("RunService")
+local p = game.Players.LocalPlayer
 
 local activeAccessories = {} local headlessConnection = nil local headIds = {215718515, 74891470, 1744060292}
 
@@ -428,13 +563,28 @@ p.CharacterAdded:Connect(function()
     if _G.korbloxActive then applyKorbloxLocal() end 
     if _G.headlessActive then applyVisualsOnce(true) end 
     if _G.onlyHeadlessActive then applyVisualsOnce(false) end 
-    if ia then af() end 
+    if shared.ia then af() end 
 end)
 
 sg.Destroying:Connect(function() clearAllVisuals() if fF then fF:Destroy() end if snowFolder then snowFolder:Destroy() end end)
--- ==========================================
--- ЧАСТЬ 9 ИЗ 9: ВКЛАДКА КОНФИГА И АВТО-СТАРТ
--- ==========================================
+
+shared.applyVisualsOnce = applyVisualsOnce
+local shared = _G.AngeliW_Shared
+local co4 = shared.co4
+local createTab = shared.createTab
+local bSnow = shared.bSnow
+local bAuraBtn = shared.bAuraBtn
+local bJumpBtn = shared.bJumpBtn
+local bNcToggle = shared.bNcToggle
+local bOff = shared.bOff
+local bFlyToggle = shared.bFlyToggle
+local flyBtn = shared.flyBtn
+local numF = shared.numF
+local numS = shared.numS
+local sBtnF = shared.sBtnF
+local sFilF = shared.sFilF
+local applyKorbloxLocal = shared.applyKorbloxLocal
+local applyVisualsOnce = shared.applyVisualsOnce
 
 local configTab1 = createTab(co4, "СОХРАНИТЬ НАСТРОЙКИ", "Записать текущий конфиг")
 local bSave = Instance.new("TextButton", configTab1) bSave.Size, bSave.Position, bSave.BackgroundColor3, bSave.Text, bSave.TextColor3, bSave.Font, bSave.TextSize = UDim2.new(0, 75, 0, 22), UDim2.new(1, -85, 0, 30), Color3.fromRGB(24, 24, 27), "СОХРАНИТЬ", Color3.fromRGB(245, 245, 245), Enum.Font.GothamMedium, 10
@@ -450,8 +600,8 @@ Instance.new("UICorner", bAuto).CornerRadius = UDim.new(0, 6) Instance.new("UISt
 
 local function getSettingsTable()
     return {
-        snow = isa, aura = ia, jump = rAct, fovOn = (bOff.Text == "ON"), fovVal = tonumber(numF.Text) or 70,
-        flyOn = flyBtn.Visible, flyVal = flySpeed, noclip = noclip, korblox = _G.korbloxActive,
+        snow = shared.isa, aura = shared.ia, jump = shared.rAct, fovOn = (bOff.Text == "ON"), fovVal = tonumber(numF.Text) or 70,
+        flyOn = flyBtn.Visible, flyVal = shared.flySpeed, noclip = shared.noclip, korblox = _G.korbloxActive,
         headless = _G.headlessActive, onlyHeadless = _G.onlyHeadlessActive, autoLoad = (bAuto.Text == "ВКЛ")
     }
 end
@@ -465,10 +615,10 @@ end
 local function applySettingsTable(data)
     if data.autoLoad then bAuto.Text, bAuto.BackgroundColor3, bAuto.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) bAuto.UIStroke.Color = Color3.fromRGB(50, 255, 160)
     else bAuto.Text, bAuto.BackgroundColor3, bAuto.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) bAuto.UIStroke.Color = Color3.fromRGB(80, 30, 35) end
-    if data.snow ~= isa then bSnow.BackgroundColor3 = Color3.fromRGB(40, 240, 150) isa = data.snow end
-    if data.aura ~= ia then bAuraBtn.BackgroundColor3 = Color3.fromRGB(40, 240, 150) ia = data.aura af() end
-    if data.jump ~= rAct then bJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 240, 150) rAct = data.jump end
-    if data.noclip ~= noclip then bNcToggle.BackgroundColor3 = Color3.fromRGB(40, 240, 150) noclip = data.noclip end
+    if data.snow ~= shared.isa then bSnow.BackgroundColor3 = Color3.fromRGB(40, 240, 150) shared.isa = data.snow end
+    if data.aura ~= shared.ia then bAuraBtn.BackgroundColor3 = Color3.fromRGB(40, 240, 150) shared.ia = data.aura shared.af() end
+    if data.jump ~= shared.rAct then bJumpBtn.BackgroundColor3 = Color3.fromRGB(40, 240, 150) shared.rAct = data.jump end
+    if data.noclip ~= shared.noclip then bNcToggle.BackgroundColor3 = Color3.fromRGB(40, 240, 150) shared.noclip = data.noclip end
     if data.korblox ~= _G.korbloxActive then _G.korbloxActive = data.korblox applyKorbloxLocal() end
     if data.headless ~= _G.headlessActive then _G.headlessActive = data.headless applyVisualsOnce(true) end
     if data.onlyHeadless ~= _G.onlyHeadlessActive then _G.onlyHeadlessActive = data.onlyHeadless applyVisualsOnce(false) end
@@ -481,7 +631,7 @@ local function applySettingsTable(data)
     end
     if data.flyOn then bFlyToggle.Text, bFlyToggle.BackgroundColor3, bFlyToggle.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) bFlyToggle.UIStroke.Color = Color3.fromRGB(50, 255, 160) flyBtn.Visible = true
     else bFlyToggle.Text, bFlyToggle.BackgroundColor3, bFlyToggle.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) bFlyToggle.UIStroke.Color = Color3.fromRGB(80, 30, 35) flyBtn.Visible = false end
-    flySpeed = data.flyVal or 1 numS.Text = tostring(flySpeed)
+    shared.flySpeed = data.flyVal or 1 numS.Text = tostring(shared.flySpeed)
 end
 
 local function loadConfigFromFile()
