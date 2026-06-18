@@ -28,8 +28,7 @@ Instance.new("UICorner",tb2).CornerRadius=UDim.new(0,6)
 local tb3=Instance.new("TextButton",sb) tb3.Size,tb3.Position,tb3.BackgroundColor3,tb3.Text,tb3.TextColor3,tb3.Font,tb3.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,140),Color3.fromRGB(16,16,18),"👑 Важные",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
 Instance.new("UICorner",tb3).CornerRadius=UDim.new(0,6)
 local tb4=Instance.new("TextButton",sb) tb4.Size,tb4.Position,tb4.BackgroundColor3,tb4.Text,tb4.TextColor3,tb4.Font,tb4.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,180),Color3.fromRGB(16,16,18),"📁 Конфиг",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
-Instance.new("UICorner",tb4).CornerRadius=UDim.new(0,6)
--- ==========================================
+Instance.new("UICorner",tb4).CornerRadius=UDim.new(0,6)-- ==========================================
 -- ЧАСТЬ 2 ИЗ 9: СТРАНИЦЫ И НАВИГАЦИЯ
 -- ==========================================
 
@@ -66,8 +65,7 @@ tb4.MouseButton1Click:Connect(function() resetMainButtons() co4.Visible=true tb4
 tb3.MouseButton1Click:Connect(function() resetMainButtons() subNav.Visible,co3_1.Visible=true,true tb3.BackgroundColor3,tb3.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) end)
 
 subBtn1.MouseButton1Click:Connect(function() co3_1.Visible,co3_2.Visible=true,false subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) end)
-subBtn2.MouseButton1Click:Connect(function() co3_1.Visible,co3_2.Visible=false,true subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)
--- ==========================================
+subBtn2.MouseButton1Click:Connect(function() co3_1.Visible,co3_2.Visible=false,true subBtn1.BackgroundColor3,subBtn1.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155) subBtn2.BackgroundColor3,subBtn2.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)-- ==========================================
 -- ЧАСТЬ 3 ИЗ 9: СОЗДАНИЕ ПАНЕЛЕЙ И КНОПОК
 -- ==========================================
 
@@ -156,8 +154,7 @@ local function drag(f)
         end 
     end) 
 end 
-drag(mf) drag(open)
--- ==========================================
+drag(mf) drag(open)-- ==========================================
 -- ЧАСТЬ 4 ИЗ 9: СЛАЙДЕРЫ И КАМЕРА
 -- ==========================================
 
@@ -184,8 +181,7 @@ bOff.MouseButton1Click:Connect(function()
         bOff.Text,bOff.BackgroundColor3,bOff.TextColor3="ON",Color3.fromRGB(40,240,150),Color3.fromRGB(15,15,18) bOff.UIStroke.Color=Color3.fromRGB(50,255,160) 
         workspace.CurrentCamera.FieldOfView=tonumber(numF.Text) or 70 
     end 
-end) 
--- ==========================================
+end)-- ==========================================
 -- ЧАСТЬ 5 ИЗ 9: СИСТЕМА ПОЛЕТА И NOCLIP
 -- ==========================================
 
@@ -228,8 +224,7 @@ run.Heartbeat:Connect(function()
         if bv then bv:Destroy() bv=nil end if bgG then bgG:Destroy() bgG=nil end 
         local h=p.Character and p.Character:FindFirstChild("Humanoid") if h and h.PlatformStand then h.PlatformStand=false end 
     end 
-end)
--- ==========================================
+end)-- ==========================================
 -- ЧАСТЬ 6 ИЗ 9: ВИЗУАЛЬНЫЕ ЭФФЕКТЫ
 -- ==========================================
 
@@ -276,8 +271,7 @@ local function makeRing(sz,tSz,sp)
     tw:Create(d,TweenInfo.new(sp),{Size=tSz,Transparency=1}):Play() game:GetService("Debris"):AddItem(d,sp) 
 end 
 bJumpBtn.MouseButton1Click:Connect(function() rAct=not rAct if rAct then bJumpBtn.Text,bJumpBtn.BackgroundColor3,bJumpBtn.UIStroke.Color="ВКЛ",Color3.fromRGB(40,240,150),Color3.fromRGB(50,255,160) bJumpBtn.TextColor3=Color3.fromRGB(15,15,18) else bJumpBtn.Text,bJumpBtn.BackgroundColor3,bJumpBtn.UIStroke.Color="ВЫКЛ",Color3.fromRGB(60,20,25),Color3.fromRGB(80,30,35) bJumpBtn.TextColor3=Color3.fromRGB(200,150,155) end end) 
-run.Heartbeat:Connect(function() local h=p.Character and p.Character:FindFirstChild("Humanoid") if h and rAct then local air=h.FloorMaterial==Enum.Material.Air if air and not wasAir then makeRing(Vector3.new(0.1,1.5,1.5),Vector3.new(0.01,7,7),0.25) makeRing(Vector3.new(0.05,1,1),Vector3.new(0.01,11,11),0.3) end wasAir=air end end) 
--- ==========================================
+run.Heartbeat:Connect(function() local h=p.Character and p.Character:FindFirstChild("Humanoid") if h and rAct then local air=h.FloorMaterial==Enum.Material.Air if air and not wasAir then makeRing(Vector3.new(0.1,1.5,1.5),Vector3.new(0.01,7,7),0.25) makeRing(Vector3.new(0.05,1,1),Vector3.new(0.01,11,11),0.3) end wasAir=air end end)-- ==========================================
 -- ЧАСТЬ 7 ИЗ 9: ЛОКАЛЬНЫЙ КОРБЛОКС
 -- ==========================================
 
@@ -349,8 +343,7 @@ bKorbloxBtn.MouseButton1Click:Connect(function()
     else bKorbloxBtn.Text, bKorbloxBtn.BackgroundColor3, bKorbloxBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60,20,25), Color3.fromRGB(200,150,150) bKorbloxBtn.UIStroke.Color = Color3.fromRGB(80,30,35) removeKorbloxLocal() end
 end)
 
-task.spawn(function() while true do if _G.korbloxActive and p.Character then applyKorbloxLocal() end task.wait(0.5) end end)
--- ==========================================
+task.spawn(function() while true do if _G.korbloxActive and p.Character then applyKorbloxLocal() end task.wait(0.5) end end)-- ==========================================
 -- ЧАСТЬ 8 ИЗ 9: ХЕДЛЕСС И ОБРАБОТЧИК СПАВНА
 -- ==========================================
 
