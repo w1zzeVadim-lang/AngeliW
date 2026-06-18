@@ -515,80 +515,180 @@ local af = shared.af
 local run = game:GetService("RunService")
 local p = game.Players.LocalPlayer
 
-local activeAccessories = {} local headlessConnection = nil local headIds = {215718515, 74891470, 1744060292}
+local activeAccessories = {} 
+local headlessConnection = nil 
+local headIds = {215718515, 74891470, 1744060292}
 
 local function weldParts(part0, part1, c0, c1)
-    for _, child in pairs(part1:GetChildren()) do if child:IsA("Weld") or child:IsA("WeldConstraint") or child.Name == "AccessoryWeld" then child:Destroy() end end
-    local weld = Instance.new("Weld") weld.Name, weld.Part0, weld.Part1, weld.C0, weld.C1, weld.Parent = "AccessoryWeld", part0, part1, c0, c1, part0 return weld
+    for _, child in pairs(part1:GetChildren()) do 
+        if child:IsA("Weld") or child:IsA("WeldConstraint") or child.Name == "AccessoryWeld" then 
+            child:Destroy() 
+        end 
+    end
+    local weld = Instance.new("Weld") 
+    weld.Name, weld.Part0, weld.Part1, weld.C0, weld.C1, weld.Parent = "AccessoryWeld", part0, part1, c0, c1, part0 
+    return weld
 end
 
+-- Обновленная безопасная функция обхода блокировки GetObjects
 local function safeGetObjects(assetId)
-    local success, result = pcall(function() return game:GetObjects("rbxassetid://" .. tostring(assetId)) end)
-    if success and result and #result > 0 then return result end return nil
+    local objects = nil
+    local success = pcall(function()
+        if typeof(getobjects) == "function" then
+            objects = getobjects("rbxassetid://" .. tostring(assetId))
+        else
+            objects = game:GetObjects("rbxassetid://" .. tostring(assetId))
+        end
+    end)
+    if success and objects then 
+        if typeof(objects) == "table" then return objects end
+        if typeof(objects) == "Instance" then return {objects} end
+    end 
+    return nil
 end
 
 local function addAccessoryToCharacter(accessoryId, parentPart, character)
     if not parentPart or not parentPart.Parent then return end 
     local accessoryKey = tostring(accessoryId) .. "_" .. parentPart.Name 
     if activeAccessories[accessoryKey] then return end
+    
     local objects = safeGetObjects(accessoryId) 
-    if objects and objects then 
-        local accessory = objects
+    if objects and objects[1] then 
+        local accessory = objects[1]
         accessory.Name, accessory.Parent = accessory.Name .. "_Custom", workspace
-        local handle = accessory:FindFirstChild("Handle") if not handle or not handle:IsA("BasePart") then accessory:Destroy() return end
+        local handle = accessory:FindFirstChild("Handle") 
+        if not handle or not handle:IsA("BasePart") then 
+            accessory:Destroy() 
+            return 
+        end
+        
         local attachment = handle:FindFirstChildOfClass("Attachment")
         if attachment then
-            local pAttach = nil for _, d in pairs(parentPart:GetDescendants()) do if d:IsA("Attachment") and d.Name == attachment.Name then pAttach = d break end end
-            if pAttach then weldParts(parentPart, handle, pAttach.CFrame, attachment.CFrame) else weldParts(parentPart, handle, CFrame.new(), attachment.CFrame) end
+            local pAttach = nil 
+            for _, d in pairs(parentPart:GetDescendants()) do 
+                if d:IsA("Attachment") and d.Name == attachment.Name then 
+                    pAttach = d 
+                    break 
+                end 
+            end
+            if pAttach then 
+                weldParts(parentPart, handle, pAttach.CFrame, attachment.CFrame) 
+            else 
+                weldParts(parentPart, handle, CFrame.new(), attachment.CFrame) 
+            end
         else
-            local attPoint = accessory:FindFirstChild("AttachmentPoint") local c1 = attPoint and attPoint.CFrame or CFrame.new() local offset = parentPart.Name == "Head" and CFrame.new(0, 0.5, 0) or CFrame.new() weldParts(parentPart, handle, offset, c1)
+            local attPoint = accessory:FindFirstChild("AttachmentPoint") 
+            local c1 = attPoint and attPoint.CFrame or CFrame.new() 
+            local offset = parentPart.Name == "Head" and CFrame.new(0, 0.5, 0) or CFrame.new() 
+            weldParts(parentPart, handle, offset, c1)
         end
-        handle.CanCollide, accessory.Parent = false, character activeAccessories[accessoryKey] = accessory
+        handle.CanCollide, accessory.Parent = false, character 
+        activeAccessories[accessoryKey] = accessory
     end
 end
 
 local function forceHeadless(head)
-    if not head or not head.Parent then return end head.Transparency = 1
-    for _, child in pairs(head:GetChildren()) do if child:IsA("Decal") or child.Name == "face" then child.Transparency = 1 end end
-    local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh") if headMesh then headMesh.Scale = Vector3.new(0.001, 0.001, 0.001) end
+    if not head or not head.Parent then return end 
+    head.Transparency = 1
+    for _, child in pairs(head:GetChildren()) do 
+        if child:IsA("Decal") or child.Name == "face" then 
+            child.Transparency = 1 
+        end 
+    end
+    local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh") 
+    if headMesh then headMesh.Scale = Vector3.new(0.001, 0.001, 0.001) end
 end
 
+-- Исправленная очистка: убирает баг с жирным персонажем
 local function clearAllVisuals()
     if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end
-    for key, acc in pairs(activeAccessories) do if acc and acc.Parent then acc:Destroy() end end table.clear(activeAccessories)
-    local char = p.Character local head = char and char:FindFirstChild("Head")
+    for key, acc in pairs(activeAccessories) do 
+        if acc and acc.Parent then acc:Destroy() end 
+    end 
+    table.clear(activeAccessories)
+    
+    local char = p.Character 
+    local head = char and char:FindFirstChild("Head")
+    local hum = char and char:FindFirstChildOfClass("Humanoid")
+    
     if head then
-        head.Transparency = 0 for _, child in pairs(head:GetChildren()) do if child:IsA("Decal") or child.Name == "face" then child.Transparency = 0 end end
-        local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh") if headMesh then headMesh.Scale = Vector3.new(1, 1, 1) end
+        head.Transparency = 0 
+        for _, child in pairs(head:GetChildren()) do 
+            if child:IsA("Decal") or child.Name == "face" then child.Transparency = 0 end 
+        end
+        local headMesh = head:FindFirstChildOfClass("SpecialMesh") or head:FindFirstChild("Mesh") 
+        if headMesh then headMesh.Scale = Vector3.new(1, 1, 1) end
     end
-    for _,v in pairs(game:GetService("Lighting"):GetChildren()) do if v.Name == "AngelLittleAtmosphere" then v:Destroy() end end
+    
+    -- Фикс жиробаса: заставляем движок Roblox принудительно обновить пропорции скина
+    if hum then
+        pcall(function()
+            local currentRig = hum.RigType
+            hum.RigType = (currentRig == Enum.HumanoidRigType.R15) and Enum.HumanoidRigType.R6 or Enum.HumanoidRigType.R15
+            run.Heartbeat:Wait()
+            hum.RigType = currentRig
+        end)
+    end
+    
+    for _,v in pairs(game:GetService("Lighting"):GetChildren()) do 
+        if v.Name == "AngelLittleAtmosphere" then v:Destroy() end 
+    end
 end
 
 local function applyVisualsOnce(spawnHorns)
-    local char = p.Character if not char then return end local head = char:WaitForChild("Head", 3) if not head then return end forceHeadless(head)
+    local char = p.Character if not char then return end 
+    local head = char:WaitForChild("Head", 3) if not head then return end 
+    forceHeadless(head)
+    
     if spawnHorns then 
         table.clear(activeAccessories)
-        for _, id in ipairs(headIds) do task.spawn(function() addAccessoryToCharacter(id, head, char) end) end 
+        for _, id in ipairs(headIds) do 
+            task.spawn(function() addAccessoryToCharacter(id, head, char) end) 
+        end 
     end
+    
     if not headlessConnection then
         headlessConnection = run.Heartbeat:Connect(function()
             if (_G.headlessActive or _G.onlyHeadlessActive) and char and char.Parent and head and head.Parent then
-                head.Transparency = 1 for _, child in pairs(head:GetChildren()) do if (child:IsA("Decal") or child.Name == "face") and child.Transparency ~= 1 then child.Transparency = 1 end end
-            else if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end end
+                head.Transparency = 1 
+                for _, child in pairs(head:GetChildren()) do 
+                    if (child:IsA("Decal") or child.Name == "face") and child.Transparency ~= 1 then 
+                        child.Transparency = 1 
+                    end 
+                end
+            else 
+                if headlessConnection then headlessConnection:Disconnect() headlessConnection = nil end 
+            end
         end)
     end
 end
 
 bHeadlessBtn.MouseButton1Click:Connect(function()
-    if _G.onlyHeadlessActive then return end _G.headlessActive = not _G.headlessActive
-    if _G.headlessActive then bHeadlessBtn.Text, bHeadlessBtn.BackgroundColor3, bHeadlessBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) bHeadlessBtn.UIStroke.Color = Color3.fromRGB(50, 255, 160) applyVisualsOnce(true)
-    else bHeadlessBtn.Text, bHeadlessBtn.BackgroundColor3, bHeadlessBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) bHeadlessBtn.UIStroke.Color = Color3.fromRGB(80, 30, 35) clearAllVisuals() end
+    if _G.onlyHeadlessActive then return end 
+    _G.headlessActive = not _G.headlessActive
+    if _G.headlessActive then 
+        bHeadlessBtn.Text, bHeadlessBtn.BackgroundColor3, bHeadlessBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) 
+        bHeadlessBtn.UIStroke.Color = Color3.fromRGB(50, 255, 160) 
+        applyVisualsOnce(true)
+    else 
+        bHeadlessBtn.Text, bHeadlessBtn.BackgroundColor3, bHeadlessBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) 
+        bHeadlessBtn.UIStroke.Color = Color3.fromRGB(80, 30, 35) 
+        clearAllVisuals() 
+    end
 end)
 
 bOnlyHeadlessBtn.MouseButton1Click:Connect(function()
-    if _G.headlessActive then return end _G.onlyHeadlessActive = not _G.onlyHeadlessActive
-    if _G.onlyHeadlessActive then bOnlyHeadlessBtn.Text, bOnlyHeadlessBtn.BackgroundColor3, bOnlyHeadlessBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) bOnlyHeadlessBtn.UIStroke.Color = Color3.fromRGB(50, 255, 160) applyVisualsOnce(false)
-    else bOnlyHeadlessBtn.Text, bOnlyHeadlessBtn.BackgroundColor3, bOnlyHeadlessBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) bOnlyHeadlessBtn.UIStroke.Color = Color3.fromRGB(80, 30, 35) clearAllVisuals() end
+    if _G.headlessActive then return end 
+    _G.onlyHeadlessActive = not _G.onlyHeadlessActive
+    if _G.onlyHeadlessActive then 
+        bOnlyHeadlessBtn.Text, bOnlyHeadlessBtn.BackgroundColor3, bOnlyHeadlessBtn.TextColor3 = "ВКЛ", Color3.fromRGB(40, 240, 150), Color3.fromRGB(15, 15, 18) 
+        bOnlyHeadlessBtn.UIStroke.Color = Color3.fromRGB(50, 255, 160) 
+        applyVisualsOnce(false)
+    else 
+        bOnlyHeadlessBtn.Text, bOnlyHeadlessBtn.BackgroundColor3, bOnlyHeadlessBtn.TextColor3 = "ВЫКЛ", Color3.fromRGB(60, 20, 25), Color3.fromRGB(200, 150, 150) 
+        bOnlyHeadlessBtn.UIStroke.Color = Color3.fromRGB(80, 30, 35) 
+        clearAllVisuals() 
+    end
 end)
 
 p.CharacterAdded:Connect(function() 
@@ -599,7 +699,11 @@ p.CharacterAdded:Connect(function()
     if shared.ia then af() end 
 end)
 
-sg.Destroying:Connect(function() clearAllVisuals() if fF then fF:Destroy() end if snowFolder then snowFolder:Destroy() end end)
+sg.Destroying:Connect(function() 
+    clearAllVisuals() 
+    if fF then fF:Destroy() end 
+    if snowFolder then snowFolder:Destroy() end 
+end)
 
 shared.applyVisualsOnce = applyVisualsOnce
 local shared = _G.AngeliW_Shared
