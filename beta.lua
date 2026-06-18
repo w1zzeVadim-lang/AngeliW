@@ -1,15 +1,15 @@
 -- ==========================================
--- ЧАСТЬ 1 ИЗ 9: ИСПРАВЛЕННЫЙ СТАРТ И ЦЕНТРОВКА
+-- ЧАСТЬ 1 ИЗ 9: ИНИЦИАЛИЗАЦИЯ И ЦЕНТРОВКА ОКНА
 -- ==========================================
 
 task.wait(1)
 local p,tw,run,l=game.Players.LocalPlayer,game:GetService("TweenService"),game:GetService("RunService"),game:GetService("Lighting")
 local g=p:WaitForChild("PlayerGui",10)
 
-local function clean(n) 
-    local o=g:FindFirstChild(n) or game.CoreGui:FindFirstChild(n) 
-    if o then o:Destroy() end 
-end 
+local function clean(n) 
+    local o=g:FindFirstChild(n) or game.CoreGui:FindFirstChild(n) 
+    if o then o:Destroy() end 
+end 
 clean("AngelW_TikTokGui") clean("SnowCanvasGui")
 
 local sg=Instance.new("ScreenGui",g) sg.Name,sg.ResetOnSpawn="AngelW_TikTokGui",false
@@ -29,7 +29,6 @@ local tb3=Instance.new("TextButton",sb) tb3.Size,tb3.Position,tb3.BackgroundColo
 Instance.new("UICorner",tb3).CornerRadius=UDim.new(0,6)
 local tb4=Instance.new("TextButton",sb) tb4.Size,tb4.Position,tb4.BackgroundColor3,tb4.Text,tb4.TextColor3,tb4.Font,tb4.TextSize=UDim2.new(1,-16,0,32),UDim2.new(0,8,0,180),Color3.fromRGB(16,16,18),"📁 Конфиг",Color3.fromRGB(150,150,155),Enum.Font.GothamMedium,11
 Instance.new("UICorner",tb4).CornerRadius=UDim.new(0,6)
-
 -- ==========================================
 -- ЧАСТЬ 2 ИЗ 9: СТРАНИЦЫ И НАВИГАЦИЯ
 -- ==========================================
@@ -58,7 +57,7 @@ local function resetMainButtons()
     tb2.BackgroundColor3,tb2.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
     tb3.BackgroundColor3,tb3.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
     tb4.BackgroundColor3,tb4.TextColor3=Color3.fromRGB(16,16,18),Color3.fromRGB(150,150,155)
-    co1.Visible,co2.Visible,co3_1.Visible,co3_2.Visible,co4.Visible,subNav.Visible=false,false,false,false,false,false,false
+    co1.Visible,co2.Visible,co3_1.Visible,co3_2.Visible,co4.Visible,subNav.Visible=false,false,false,false,false,false
 end
 
 tb1.MouseButton1Click:Connect(function() resetMainButtons() co1.Visible=true tb1.BackgroundColor3,tb1.TextColor3=Color3.fromRGB(24,24,27),Color3.fromRGB(245,245,245) end)
@@ -209,21 +208,21 @@ end)
 
 bFlyToggle.MouseButton1Click:Connect(function() 
     local active=not flyBtn.Visible flyBtn.Visible=active 
-    if active then bFlyToggle.Text,bFlyToggle.BackgroundColor3,bFlyToggle.TextColor3="ВКЛ",Color3.fromRGB(40,240,150),Color3.fromRGB(15,15,18) bFlyToggle.UIStroke.Color=Color3.fromRGB(50,255,160) 
+    if active then bFlyToggle.Text, bFlyToggle.BackgroundColor3, bFlyToggle.TextColor3="ВКЛ", Color3.fromRGB(40,240,150), Color3.fromRGB(15,15,18) bFlyToggle.UIStroke.Color=Color3.fromRGB(50,255,160) 
     else 
-        bFlyToggle.Text,bFlyToggle.BackgroundColor3,bFlyToggle.TextColor3="ВЫКЛ",Color3.fromRGB(60,20,25),Color3.fromRGB(200,150,150) bFlyToggle.UIStroke.Color=Color3.fromRGB(80,30,35) flying=false 
-        flyBtn.BackgroundColor3,flyBtn.TextColor3,flyBtn.UIStroke.Color=Color3.fromRGB(60,20,25),Color3.fromRGB(200,150,150),Color3.fromRGB(80,30,35) 
+        bFlyToggle.Text, bFlyToggle.BackgroundColor3, bFlyToggle.TextColor3="ВЫКЛ", Color3.fromRGB(60,20,25), Color3.fromRGB(200,150,150) bFlyToggle.UIStroke.Color=Color3.fromRGB(80,30,35) flying=false 
+        flyBtn.BackgroundColor3, flyBtn.TextColor3, flyBtn.UIStroke.Color=Color3.fromRGB(60,20,25), Color3.fromRGB(200,150,150), Color3.fromRGB(80,30,35) 
         if bv then bv:Destroy() bv=nil end if bgG then bgG:Destroy() bgG=nil end 
         local h=p.Character and p.Character:FindFirstChild("Humanoid") if h then h.PlatformStand=false end 
     end 
 end) 
 
-bNcToggle.MouseButton1Click:Connect(function() noclip=not noclip if noclip then bNcToggle.Text,bNcToggle.BackgroundColor3,bNcToggle.TextColor3="ВКЛ",Color3.fromRGB(40,240,150),Color3.fromRGB(15,15,18) bNcToggle.UIStroke.Color=Color3.fromRGB(50,255,160) else bNcToggle.Text,bNcToggle.BackgroundColor3,bNcToggle.TextColor3="ВЫКЛ",Color3.fromRGB(60,20,25),Color3.fromRGB(200,150,150) bNcToggle.UIStroke.Color=Color3.fromRGB(80,30,35) end end) 
+bNcToggle.MouseButton1Click:Connect(function() noclip=not noclip if noclip then bNcToggle.Text, bNcToggle.BackgroundColor3, bNcToggle.TextColor3="ВКЛ", Color3.fromRGB(40,240,150), Color3.fromRGB(15,15,18) bNcToggle.UIStroke.Color=Color3.fromRGB(50,255,160) else bNcToggle.Text, bNcToggle.BackgroundColor3, bNcToggle.TextColor3="ВЫКЛ", Color3.fromRGB(60,20,25), Color3.fromRGB(200,150,150) bNcToggle.UIStroke.Color=Color3.fromRGB(80,30,35) end end) 
 
 run.Heartbeat:Connect(function() 
     if noclip and p.Character then for _,v in pairs(p.Character:GetChildren()) do if v:IsA("BasePart") then v.CanCollide=false end end end 
     if flying and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and p.Character:FindFirstChild("Humanoid") and bv and bgG then 
-        local r,h,cam=p.Character.HumanoidRootPart,p.Character.Humanoid,workspace.CurrentCamera r.AssemblyLinearVelocity,r.AssemblyAngularVelocity=Vector3.new(0,0,0),Vector3.new(0,0,0) 
+        local r,h,cam=p.Character.HumanoidRootPart, p.Character.Humanoid, workspace.CurrentCamera r.AssemblyLinearVelocity, r.AssemblyAngularVelocity=Vector3.new(0,0,0), Vector3.new(0,0,0) 
         bgG.CFrame=cam.CFrame h.PlatformStand=true bv.Velocity=cam.CFrame.LookVector*(flySpeed*25) 
     else 
         if bv then bv:Destroy() bv=nil end if bgG then bgG:Destroy() bgG=nil end 
@@ -371,8 +370,9 @@ local function addAccessoryToCharacter(accessoryId, parentPart, character)
     if not parentPart or not parentPart.Parent then return end 
     local accessoryKey = tostring(accessoryId) .. "_" .. parentPart.Name 
     if activeAccessories[accessoryKey] then return end
-    local accessory = safeGetObjects(accessoryId) 
-    if accessory then 
+    local objects = safeGetObjects(accessoryId) 
+    if objects and objects[1] then 
+        local accessory = objects[1]
         accessory.Name, accessory.Parent = accessory.Name .. "_Custom", workspace
         local handle = accessory:FindFirstChild("Handle") if not handle or not handle:IsA("BasePart") then accessory:Destroy() return end
         local attachment = handle:FindFirstChildOfClass("Attachment")
